@@ -280,6 +280,614 @@
 <body>
   <header class="hero">
     <div class="hero-inner">
+      <div class="kicker">IGSD · Montreal Protocol Analytics · 10 Year Anniversary</div>
+      <h1>Montreal Protocol <span>Agreement Dashboard</span></h1>
+      <p class="hero-sub">
+        An analysis of how 198 Parties agreed to the Montreal Protocol and its five Amendments (6 instruments total) — tracking the pace, method, and leadership of global ozone protection from 1987 to 2025.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><div class="num" id="heroTotal"></div><div class="lbl">Total Parties (MP)</div></div>
+        <div class="stat"><div class="num" id="heroInstruments"></div><div class="lbl">Instruments</div></div>
+        <div class="stat"><div class="num" id="heroKigali"></div><div class="lbl">Kigali Agreements</div></div>
+        <div class="stat"><div class="num" id="heroYears"></div><div class="lbl">Years Covered</div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <div class="section-head"><span class="sec-num">01 —</span><h2>Cumulative Momentum Across Instruments</h2></div>
+      <p class="desc">Year-by-year cumulative agreement counts for each instrument, derived from each party's first agreement date (across Ratification, Acceptance, Approval, Accession, Succession).</p>
+      <div class="divider"></div>
+      <div class="card">
+        <h3>Cumulative Party Agreements Over Time</h3>
+        <div class="sub">Comparative uptake curves for MP (1987), London, Copenhagen, Montreal, Beijing, and Kigali.</div>
+        <div id="cumChart" class="plot tall"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="sec-num">02 —</span><h2>Kigali: Pace and Methods</h2></div>
+      <p class="desc">Stacked annual contributions by A5 and non-A5 parties plus method split for Kigali agreements.</p>
+      <div class="divider"></div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>New Kigali Agreements Per Year</h3>
+          <div class="sub">Stacked bars: A5 vs non-A5 counts by year.</div>
+          <div id="kigaliYearChart" class="plot"></div>
+        </div>
+        <div class="card">
+          <h3>Kigali Method Breakdown</h3>
+          <div class="sub">Breakdown by legal method of first Kigali agreement.</div>
+          <div id="kigaliMethodChart" class="plot compact"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="sec-num">03 —</span><h2>First Movers and Group Profile</h2></div>
+      <p class="desc">Earliest 30 Kigali parties and cross-instrument A5/non-A5 participation comparison.</p>
+      <div class="divider"></div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>First 30 Kigali Parties to Agree</h3>
+          <div class="sub">Ordered by first agreement date.</div>
+          <div id="first20" class="first-list"></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div class="card">
+            <h3>A5 vs non-A5 by Instrument</h3>
+            <div class="sub">Count of parties per instrument by group.</div>
+            <div id="a5ComparisonChart" class="plot compact"></div>
+          </div>
+          <div class="card">
+            <h3>Kigali Agreement Coverage by Group</h3>
+            <div class="sub">Ratified/agreed vs not yet agreed, by group.</div>
+            <div id="kigaliShareChart" class="plot compact"></div>
+          </div>
+          <div class="card">
+            <h3>Method Evolution Across Instruments</h3>
+            <div class="sub">Stacked method composition by instrument.</div>
+            <div id="methodEvolutionChart" class="plot compact"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="sec-num">04 —</span><h2>Kigali World Map</h2></div>
+      <p class="desc">World map colored by the order bucket in which each party joined Kigali. The projection is centered away from a US-centric view for publication balance.</p>
+      <div class="divider"></div>
+      <div class="card">
+        <h3>World Map: Kigali Agreement Order Buckets</h3>
+        <div class="sub">Buckets: 1-5, 6-10, 11-23, 24-50, 51-100, 101-150, 151+.</div>
+        <div id="worldMapChart" class="plot map"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="sec-num">05 —</span><h2>Leadership Ranking and Key Insights</h2></div>
+      <p class="desc">Score definition: Ratification=3, Acceptance/Approval=2, Accession/Succession=1. Ranking is computed across all six instruments.</p>
+      <div class="divider"></div>
+      <div class="card">
+        <h3>Top 30 Parties by Weighted Commitment Score</h3>
+        <div class="sub">Sorted by score (desc), amendments covered (desc), then country.</div>
+        <table class="rank-table">
+          <thead>
+            <tr><th>#</th><th>Country</th><th>Group</th><th>Instruments</th><th>Score/18</th></tr>
+          </thead>
+          <tbody id="rankBody"></tbody>
+        </table>
+      </div>
+      <div class="insights">
+        <div class="insight"><div class="num" id="ins1Num"></div><div class="txt" id="ins1Txt"></div></div>
+        <div class="insight"><div class="num" id="ins2Num"></div><div class="txt" id="ins2Txt"></div></div>
+        <div class="insight"><div class="num" id="ins3Num"></div><div class="txt" id="ins3Txt"></div></div>
+      </div>
+    </section>
+
+    
+
+  <script>
+    const D = window.MP_DASHBOARD_DATA;
+    if (!D) {
+      throw new Error("Dashboard data not found. Ensure mp_dashboard_data.js is in the same folder.");
+    }
+
+    const instrumentOrder = ["MP (1987)", "London (1990)", "Copenhagen (1992)", "Montreal (1997)", "Beijing (1999)", "Kigali (2016)"];
+    const instrumentColors = {
+      "MP (1987)": "#264a78",
+      "London (1990)": "#1f7a78",
+      "Copenhagen (1992)": "#8b6f1b",
+      "Montreal (1997)": "#6d4c8e",
+      "Beijing (1999)": "#b65b2f",
+      "Kigali (2016)": "#b54935",
+    };
+
+    document.getElementById("heroTotal").textContent = D.hero.total_parties;
+    document.getElementById("heroInstruments").textContent = D.hero.instruments;
+    document.getElementById("heroKigali").textContent = D.hero.kigali_agreements;
+    document.getElementById("heroYears").textContent = D.hero.years_span;
+
+    function plotCumulative() {
+      const traces = instrumentOrder.map((name) => {
+        const pts = D.cumData[name];
+        return {
+          type: "scatter",
+          mode: "lines+markers",
+          name,
+          x: pts.map(p => p.year),
+          y: pts.map(p => p.count),
+          marker: { size: 5 },
+          line: { color: instrumentColors[name], width: name === "Kigali (2016)" ? 4 : 2.5, dash: name === "Kigali (2016)" ? "dash" : "solid" },
+          hovertemplate: "%{x}<br>%{y} parties<extra>" + name + "</extra>",
+        };
+      });
+      Plotly.newPlot("cumChart", traces, {
+        margin: { l: 56, r: 12, t: 10, b: 44 },
+        xaxis: { title: "Year", dtick: 2, gridcolor: "rgba(0,0,0,0.08)" },
+        yaxis: { title: "Cumulative agreements", gridcolor: "rgba(0,0,0,0.08)" },
+        legend: { orientation: "h", y: -0.22 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)"
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function plotKigaliYear() {
+      const years = Object.keys(D.kigaliByYear.a5).sort();
+      const t1 = {
+        type: "bar",
+        name: "A5",
+        x: years,
+        y: years.map(y => D.kigaliByYear.a5[y] || 0),
+        marker: { color: "#1f7a78" },
+        hovertemplate: "A5<br>%{x}: %{y}<extra></extra>"
+      };
+      const t2 = {
+        type: "bar",
+        name: "non-A5",
+        x: years,
+        y: years.map(y => D.kigaliByYear.nonA5[y] || 0),
+        marker: { color: "#b54935" },
+        hovertemplate: "non-A5<br>%{x}: %{y}<extra></extra>"
+      };
+      Plotly.newPlot("kigaliYearChart", [t1, t2], {
+        barmode: "stack",
+        margin: { l: 50, r: 14, t: 10, b: 44 },
+        xaxis: { title: "Year" },
+        yaxis: { title: "New agreements" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)"
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function plotKigaliMethod() {
+      const m = D.methodBreakdown["Kigali (2016)"];
+      const labels = Object.keys(m).filter(k => m[k] > 0);
+      const values = labels.map(k => m[k]);
+      const colors = {
+        Ratification: "#1f8a4c",
+        Acceptance: "#2f8b8b",
+        Approval: "#8b7412",
+        Accession: "#6d4c8e",
+        Succession: "#b65b2f",
+      };
+      Plotly.newPlot("kigaliMethodChart", [{
+        type: "pie",
+        labels,
+        values,
+        hole: 0.6,
+        marker: { colors: labels.map(l => colors[l]) },
+        textinfo: "percent",
+        textposition: "inside",
+        sort: false,
+        hovertemplate: "%{label}: %{value} (%{percent})<extra></extra>",
+      }], {
+        margin: { l: 8, r: 8, t: 4, b: 4 },
+        showlegend: true,
+        legend: { x: 1.02, y: 0.5 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function renderFirst20() {
+      const el = document.getElementById("first20");
+      D.kigaliFirst30.forEach((r, i) => {
+        const row = document.createElement("div");
+        row.className = "first-row";
+        row.innerHTML = `
+          <div class="rank-badge">${i + 1}</div>
+          <div class="date-col">${r.date}</div>
+          <div class="party-col">${r.country}</div>
+          <div class="tag ${r.a5 ? "tag-a5" : "tag-non"}">${r.a5 ? "A5" : "non-A5"}</div>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    function plotA5Comparison() {
+      const labels = instrumentOrder;
+      const a5 = labels.map(k => D.a5Comparison[k].a5_count);
+      const non = labels.map(k => D.a5Comparison[k].non_a5_count);
+      Plotly.newPlot("a5ComparisonChart", [
+        { type: "bar", name: "A5", x: labels, y: a5, marker: {color:"#1f7a78"} },
+        { type: "bar", name: "non-A5", x: labels, y: non, marker: {color:"#b54935"} },
+      ], {
+        barmode: "group",
+        margin: { l: 52, r: 10, t: 10, b: 72 },
+        xaxis: { tickangle: -20 },
+        yaxis: { title: "Party count" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)"
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function plotKigaliShare() {
+      const r = D.kigaliShare.ratified;
+      const n = D.kigaliShare.not_yet;
+      Plotly.newPlot("kigaliShareChart", [
+        {
+          type: "bar", orientation: "h", name: "Agreed to Kigali",
+          y: ["A5 Parties", "non-A5 Parties"],
+          x: [r.a5, r.nonA5],
+          marker: {color:["#1f7a78", "#b54935"]},
+          hovertemplate: "%{y}: %{x} agreed<extra></extra>"
+        },
+        {
+          type: "bar", orientation: "h", name: "Not yet agreed",
+          y: ["A5 Parties", "non-A5 Parties"],
+          x: [n.a5, n.nonA5],
+          marker: {color:["rgba(31,122,120,.25)", "rgba(181,73,53,.25)"]},
+          hovertemplate: "%{y}: %{x} not yet<extra></extra>"
+        }
+      ], {
+        barmode: "stack",
+        margin: { l: 88, r: 14, t: 8, b: 30 },
+        xaxis: { title: "Party count" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)"
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function plotMethodEvolution() {
+      const labels = instrumentOrder;
+      const methods = ["Ratification", "Acceptance", "Approval", "Accession", "Succession"];
+      const methodColors = {
+        Ratification: "#1f8a4c",
+        Acceptance: "#2f8b8b",
+        Approval: "#8b7412",
+        Accession: "#6d4c8e",
+        Succession: "#b65b2f",
+      };
+      const traces = methods.map((m) => ({
+        type: "bar",
+        name: m,
+        x: labels,
+        y: labels.map(k => D.methodBreakdown[k][m] || 0),
+        marker: { color: methodColors[m] }
+      }));
+      Plotly.newPlot("methodEvolutionChart", traces, {
+        barmode: "stack",
+        margin: { l: 52, r: 10, t: 10, b: 72 },
+        xaxis: { tickangle: -20 },
+        yaxis: { title: "Party count" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)"
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function plotWorldMap() {
+      const buckets = ["1-5", "6-10", "11-23", "24-50", "51-100", "101-150", "151+"];
+      const bucketToNum = Object.fromEntries(buckets.map((b, i) => [b, i]));
+      const records = D.worldMapKigali;
+
+      const colors = ["#1b3b5f", "#2d6f8a", "#3f9c9a", "#7bbf76", "#d7b43a", "#d47d2d", "#b54935"];
+      const colorscale = colors.map((c, i) => [i / (colors.length - 1), c]);
+
+      const trace = {
+        type: "choropleth",
+        locationmode: "country names",
+        locations: records.map(r => r.country_map),
+        z: records.map(r => bucketToNum[r.bucket]),
+        zmin: 0,
+        zmax: buckets.length - 1,
+        colorscale,
+        autocolorscale: false,
+        marker: { line: { color: "rgba(255,255,255,0.45)", width: 0.5 } },
+        customdata: records.map(r => [r.country, r.date, r.order, r.group, r.method, r.bucket]),
+        hovertemplate:
+          "<b>%{customdata[0]}</b><br>" +
+          "Date: %{customdata[1]}<br>" +
+          "Order: %{customdata[2]}<br>" +
+          "Group: %{customdata[3]}<br>" +
+          "Method: %{customdata[4]}<br>" +
+          "Bucket: %{customdata[5]}<extra></extra>",
+        colorbar: {
+          title: "Order bucket",
+          tickvals: buckets.map((_, i) => i),
+          ticktext: buckets,
+          len: 0.8
+        }
+      };
+
+      Plotly.newPlot("worldMapChart", [trace], {
+        margin: { l: 0, r: 0, t: 8, b: 0 },
+        geo: {
+          projection: { type: "natural earth" },
+          center: { lon: 10, lat: 15 },
+          showframe: false,
+          showcoastlines: true,
+          coastlinecolor: "rgba(17,24,39,0.45)",
+          bgcolor: "rgba(0,0,0,0)"
+        },
+        paper_bgcolor: "rgba(0,0,0,0)",
+      }, {displayModeBar:false, responsive:true});
+    }
+
+
+    function renderRanking() {
+      const body = document.getElementById("rankBody");
+      D.top30.forEach((r) => {
+        const tr = document.createElement("tr");
+        const width = Math.max(2, Math.round((r.score / 18) * 124));
+        tr.innerHTML = `
+          <td>${r.rank}</td>
+          <td>${r.country}</td>
+          <td><span class="tag ${r.non_a5 ? "tag-non" : "tag-a5"}">${r.non_a5 ? "non-A5" : "A5"}</span></td>
+          <td>${r.amendments}/6</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="score-bar" style="width:${width}px;"></div>
+              <span style="font-family:'IBM Plex Mono',monospace;">${r.score}</span>
+            </div>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    function renderInsights() {
+      document.getElementById("ins1Num").textContent = D.insights.kigali_ratification_pct + "%";
+      document.getElementById("ins1Txt").textContent =
+        "Of Kigali parties used formal Ratification, compared to " + D.insights.mp_ratification_pct + "% for MP (1987).";
+
+      document.getElementById("ins2Num").textContent = D.insights.first5_a5_count;
+      document.getElementById("ins2Txt").textContent =
+        "Of the first 5 Kigali parties to agree were A5: " + D.insights.first5_names.join(", ") + ".";
+
+      document.getElementById("ins3Num").textContent = D.insights.all6_count;
+      document.getElementById("ins3Txt").textContent =
+        "Countries in this dataset agreed to all six instruments.";
+    }
+
+    plotCumulative();
+    plotKigaliYear();
+    plotKigaliMethod();
+    renderFirst20();
+    plotA5Comparison();
+    plotKigaliShare();
+    plotMethodEvolution();
+    plotWorldMap();
+    renderRanking();
+    renderInsights();
+  </script>
+</body>
+</html>
+    }
+    .hero-stats {
+      display:grid;
+      grid-template-columns: repeat(4, minmax(140px,1fr));
+      gap:18px;
+      margin-top: 30px;
+    }
+    .stat {
+      border:1px solid rgba(227,197,127,.35);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,.02);
+      min-height: 90px;
+    }
+    .stat .num {
+      font-family:'Libre Baskerville', serif;
+      font-size: 34px;
+      line-height: 1;
+      color: #e3c57f;
+    }
+    .stat .lbl {
+      margin-top: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(244,239,226,.68);
+    }
+
+    .container { max-width: 1180px; margin: 0 auto; padding: 34px 22px 60px; }
+    .section { margin-top: 30px; }
+    .section-head {
+      display:flex;
+      align-items:flex-end;
+      gap:14px;
+      margin-bottom: 10px;
+    }
+    .sec-num {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding-bottom: 5px;
+    }
+    .section h2 {
+      margin:0;
+      font-size: 28px;
+      font-family:'Libre Baskerville', serif;
+    }
+    .section p.desc {
+      margin: 8px 0 18px;
+      max-width: 860px;
+      color: var(--slate);
+      line-height: 1.7;
+    }
+    .divider {
+      height:1px;
+      background: linear-gradient(to right, rgba(181,138,47,.8), rgba(181,138,47,.12), transparent);
+      margin-bottom: 18px;
+    }
+
+    .grid-2 {
+      display:grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 18px;
+    }
+    .grid-3 {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 20px 20px 16px;
+      overflow: hidden;
+    }
+    .card h3 {
+      margin: 0;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 22px;
+    }
+    .card .sub {
+      margin-top: 6px;
+      color: var(--slate);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .plot {
+      width: 100%;
+      height: 360px;
+      margin-top: 10px;
+    }
+    .plot.tall { height: 430px; }
+    .plot.map { height: 580px; }
+    .plot.compact { height: 320px; }
+
+    .first-list {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .first-row {
+      display:grid;
+      grid-template-columns: 36px 110px 1fr auto;
+      align-items:center;
+      gap: 10px;
+      padding: 9px 2px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .rank-badge {
+      font-family:'IBM Plex Mono', monospace;
+      font-weight: 500;
+      color: var(--slate);
+    }
+    .date-col {
+      font-family:'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--slate);
+    }
+    .party-col {
+      font-weight: 500;
+    }
+    .tag {
+      font-size: 10px;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-weight: 600;
+    }
+    .tag-a5 { background: rgba(31,122,120,.14); color: var(--teal); }
+    .tag-non { background: rgba(181,73,53,.12); color: var(--rust); }
+
+    .insights {
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .insight {
+      background: linear-gradient(135deg, #fffdfa, #f9f4e9);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 14px 12px;
+    }
+    .insight .num {
+      font-family:'Libre Baskerville', serif;
+      font-size: 32px;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .insight .txt {
+      margin-top: 8px;
+      color: var(--slate);
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .rank-table th {
+      text-align:left;
+      font-family:'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--slate);
+      border-bottom: 2px solid var(--line);
+      padding: 8px 6px;
+    }
+    .rank-table td {
+      border-bottom:1px solid var(--line);
+      padding: 8px 6px;
+    }
+    .score-bar {
+      height:7px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-soft));
+      min-width: 2px;
+    }
+    .foot {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--slate);
+      line-height: 1.7;
+    }
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      background: #f2ecdd;
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-stats { grid-template-columns: repeat(2, minmax(140px,1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .insights { grid-template-columns: 1fr; }
+      .plot.map { height: 380px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
       <div class="kicker">IGSD · Montreal Protocol Analytics · Auto-generated</div>
       <h1>Montreal Protocol <span>Agreement Dashboard</span></h1>
       <p class="hero-sub">
