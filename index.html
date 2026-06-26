@@ -42,9 +42,9 @@
   <div class="rule"></div>
   <div class="card scroll-zoom" id="card1" data-anim="rise">
     <button class="dl-btn" onclick="dl('card1','cumulative_agreements')">↓ PNG</button>
-    <h3>Cumulative Party Agreements Over Time</h3>
+    <h3>Evolution of the Montreal Protocol: from Ozone Protection to Climate Mitigation</h3>
     <div class="sub">First-agreement date per party across Ratification, Acceptance, Approval,
-      Accession and Succession. Dashed vertical lines mark adjustments and key decisions.</div>
+      Accession and Succession. Era bands mark the shift from ozone protection to climate mitigation and energy efficiency.</div>
     <div class="chartbox"><canvas id="cumChart"></canvas></div>
     <div class="foot">Source: UN Treaty Collection · Analysis: IGSD</div>
   </div>
@@ -53,13 +53,13 @@
 <!-- 02 RATIFICATIONS -->
 <section>
   <div class="sec-num" data-anim="rise">02 —</div>
-  <h2 class="sec" data-anim="rise">Ratifications per Year</h2>
+  <h2 class="sec" data-anim="rise">Ratifications per Year by Party Group</h2>
   <p class="lede" data-anim="rise">Ratifications only — the binding commitment — split between
      Article 5 (developing) and non-Article 5 (developed) parties, for each instrument.</p>
   <div class="rule"></div>
   <div class="card scroll-zoom" id="card2" data-anim="rise">
     <button class="dl-btn" onclick="dl('card2','ratifications_per_year')">↓ PNG</button>
-    <h3>Ratifications per Year by Instrument and Party Group</h3>
+    <h3>Ratifications per Year by Party Group</h3>
     <div class="sub">Darker = non-Article 5 (developed); lighter = Article 5 (developing). Shared vertical scale.</div>
     <div class="sm-grid" id="smGrid" data-stagger></div>
     <div class="foot">Ratifications only — excludes acceptance, approval, accession, succession.</div>
@@ -93,29 +93,19 @@
     <h3>Parties to Kigali Amendment by Date</h3>
     <div class="sub">PNG button now downloads the full card, including this title and note. The map displays country-level parties; the EU is counted in the dashboard totals.</div>
     <div id="mapDiv" style="height:600px;"></div>
-    <div class="foot"> </div>
+    <div class="foot">Hover any country for details · Country map excludes the European Union as a non-country party.</div>
   </div>
 </section>
 
 <!-- 05 TOP 10 -->
 <section>
   <div class="sec-num" data-anim="rise">05 —</div>
-  <h2 class="sec" data-anim="rise">Top 10 Parties by Instrument</h2>
-  <p class="lede" data-anim="rise">Leadership across the seven instruments, ranked by the strength
-     of each party's first agreement.</p>
+  <h2 class="sec" data-anim="rise">First 10 Parties to Ratify</h2>
+  <p class="lede" data-anim="rise">The first ten parties for each instrument, ordered by the earliest formal treaty action date.</p>
   <div class="rule"></div>
   <div class="card scroll-zoom" id="card5" data-anim="rise">
     <button class="dl-btn" onclick="dl('card5','top10_parties')">↓ PNG</button>
-    <h3>Leadership Across Seven Instruments</h3>
-    <div class="method">
-      <b>Methodology.</b> Within each instrument, every party is scored by the strength of its
-      <i>first</i> agreement action:
-      <span class="chip">Ratification = 3</span>
-      <span class="chip">Acceptance / Approval = 2</span>
-      <span class="chip">Accession / Succession = 1</span>.
-      Parties are ranked by score (highest first); ties are broken by the earliest date.
-      Country flags are shown beside each name.
-    </div>
+    <h3>First 10 Parties to Ratify</h3>
     <div class="t10-grid" id="t10grid" data-stagger></div>
   </div>
 </section>
