@@ -41,8 +41,7 @@
       2022,
       2023,
       2024,
-      2025,
-      2026
+      2025
     ],
     "series": {
       "Vienna (1985)": {
@@ -81,7 +80,6 @@
           196,
           196,
           196,
-          197,
           197,
           197,
           197,
@@ -134,7 +132,6 @@
           197,
           197,
           197,
-          197,
           197
         ],
         "total": 197
@@ -168,7 +165,6 @@
           193,
           194,
           195,
-          196,
           196,
           196,
           196,
@@ -228,7 +224,6 @@
           196,
           196,
           196,
-          196,
           196
         ],
         "total": 196
@@ -264,7 +259,6 @@
           184,
           192,
           194,
-          196,
           196,
           196,
           196,
@@ -322,7 +316,6 @@
           196,
           196,
           196,
-          196,
           196
         ],
         "total": 196
@@ -362,17 +355,16 @@
           null,
           null,
           23,
-          65,
-          90,
-          111,
-          128,
-          146,
-          154,
-          162,
-          171,
-          172
+          66,
+          92,
+          113,
+          130,
+          148,
+          156,
+          164,
+          173
         ],
-        "total": 172
+        "total": 173
       }
     }
   },
@@ -600,7 +592,7 @@
     "Kigali (2016)": {
       "A5": {
         "2020": 14,
-        "2019": 16,
+        "2019": 17,
         "2023": 4,
         "2024": 6,
         "2018": 19,
@@ -618,7 +610,7 @@
         "2019": 3,
         "2020": 2
       },
-      "total": 125
+      "total": 126
     }
   },
   "first30": [
@@ -804,6 +796,12 @@
     }
   ],
   "kigali_map": [
+    {
+      "iso": "ALB",
+      "name": "Albania",
+      "year": 2019,
+      "date": "18 Jan 2019"
+    },
     {
       "iso": "AND",
       "name": "Andorra",
@@ -1840,6 +1838,24 @@
         "method": "Ratification"
       },
       {
+        "country": "Russian Federation",
+        "flag": "🇷🇺",
+        "date": "18 Jun 1986",
+        "method": "Acceptance"
+      },
+      {
+        "country": "Ukraine",
+        "flag": "🇺🇦",
+        "date": "18 Jun 1986",
+        "method": "Acceptance"
+      },
+      {
+        "country": "Belarus",
+        "flag": "🇧🇾",
+        "date": "20 Jun 1986",
+        "method": "Acceptance"
+      },
+      {
         "country": "United States of America",
         "flag": "🇺🇸",
         "date": "27 Aug 1986",
@@ -1874,27 +1890,15 @@
         "flag": "🇳🇿",
         "date": "2 Jun 1987",
         "method": "Ratification"
-      },
-      {
-        "country": "Mexico",
-        "flag": "🇲🇽",
-        "date": "17 Sep 1987",
-        "method": "Ratification"
-      },
-      {
-        "country": "Switzerland",
-        "flag": "🇨🇭",
-        "date": "17 Dec 1987",
-        "method": "Ratification"
-      },
-      {
-        "country": "Egypt",
-        "flag": "🇪🇬",
-        "date": "9 May 1988",
-        "method": "Ratification"
       }
     ],
     "Montreal Protocol (1987)": [
+      {
+        "country": "Mexico",
+        "flag": "🇲🇽",
+        "date": "31 Mar 1988",
+        "method": "Acceptance"
+      },
       {
         "country": "United States of America",
         "flag": "🇺🇸",
@@ -1938,25 +1942,37 @@
         "method": "Ratification"
       },
       {
-        "country": "Luxembourg",
-        "flag": "🇱🇺",
-        "date": "17 Oct 1988",
-        "method": "Ratification"
+        "country": "Ukraine",
+        "flag": "🇺🇦",
+        "date": "20 Sep 1988",
+        "method": "Acceptance"
       },
       {
-        "country": "Portugal",
-        "flag": "🇵🇹",
-        "date": "17 Oct 1988",
-        "method": "Ratification"
-      },
-      {
-        "country": "Kenya",
-        "flag": "🇰🇪",
-        "date": "9 Nov 1988",
-        "method": "Ratification"
+        "country": "Japan",
+        "flag": "🇯🇵",
+        "date": "30 Sep 1988",
+        "method": "Acceptance"
       }
     ],
     "London Amendment (1990)": [
+      {
+        "country": "Canada",
+        "flag": "🇨🇦",
+        "date": "5 Jul 1990",
+        "method": "Acceptance"
+      },
+      {
+        "country": "New Zealand",
+        "flag": "🇳🇿",
+        "date": "1 Oct 1990",
+        "method": "Acceptance"
+      },
+      {
+        "country": "China",
+        "flag": "🇨🇳",
+        "date": "14 Jun 1991",
+        "method": "Accession"
+      },
       {
         "country": "Maldives",
         "flag": "🇲🇻",
@@ -1968,6 +1984,18 @@
         "flag": "🇸🇪",
         "date": "2 Aug 1991",
         "method": "Ratification"
+      },
+      {
+        "country": "Japan",
+        "flag": "🇯🇵",
+        "date": "4 Sep 1991",
+        "method": "Acceptance"
+      },
+      {
+        "country": "Mexico",
+        "flag": "🇲🇽",
+        "date": "11 Oct 1991",
+        "method": "Acceptance"
       },
       {
         "country": "Norway",
@@ -1982,43 +2010,31 @@
         "method": "Ratification"
       },
       {
-        "country": "United Kingdom of Great Britain and Northern Ireland",
-        "flag": "🇬🇧",
+        "country": "Denmark",
+        "flag": "🇩🇰",
         "date": "20 Dec 1991",
-        "method": "Ratification"
-      },
-      {
-        "country": "Germany",
-        "flag": "🇩🇪",
-        "date": "27 Dec 1991",
-        "method": "Ratification"
-      },
-      {
-        "country": "Luxembourg",
-        "flag": "🇱🇺",
-        "date": "20 May 1992",
-        "method": "Ratification"
-      },
-      {
-        "country": "Thailand",
-        "flag": "🇹🇭",
-        "date": "25 Jun 1992",
-        "method": "Ratification"
-      },
-      {
-        "country": "Indonesia",
-        "flag": "🇮🇩",
-        "date": "26 Jun 1992",
-        "method": "Ratification"
-      },
-      {
-        "country": "Israel",
-        "flag": "🇮🇱",
-        "date": "30 Jun 1992",
-        "method": "Ratification"
+        "method": "Acceptance"
       }
     ],
     "Copenhagen Amendment (1992)": [
+      {
+        "country": "Saudi Arabia",
+        "flag": "🇸🇦",
+        "date": "1 Mar 1993",
+        "method": "Accession"
+      },
+      {
+        "country": "Bahamas (The)",
+        "flag": "🇧🇸",
+        "date": "4 May 1993",
+        "method": "Accession"
+      },
+      {
+        "country": "Marshall Islands",
+        "flag": "🇲🇭",
+        "date": "24 May 1993",
+        "method": "Accession"
+      },
       {
         "country": "Seychelles",
         "flag": "🇸🇨",
@@ -2030,6 +2046,18 @@
         "flag": "🇳🇿",
         "date": "4 Jun 1993",
         "method": "Ratification"
+      },
+      {
+        "country": "Antigua and Barbuda",
+        "flag": "🇦🇬",
+        "date": "19 Jul 1993",
+        "method": "Accession"
+      },
+      {
+        "country": "Malaysia",
+        "flag": "🇲🇾",
+        "date": "5 Aug 1993",
+        "method": "Accession"
       },
       {
         "country": "Sweden",
@@ -2044,40 +2072,10 @@
         "method": "Ratification"
       },
       {
-        "country": "Mauritius",
-        "flag": "🇲🇺",
-        "date": "30 Nov 1993",
-        "method": "Ratification"
-      },
-      {
-        "country": "Germany",
-        "flag": "🇩🇪",
-        "date": "28 Dec 1993",
-        "method": "Ratification"
-      },
-      {
-        "country": "Chile",
-        "flag": "🇨🇱",
-        "date": "14 Jan 1994",
-        "method": "Ratification"
-      },
-      {
-        "country": "United States of America",
-        "flag": "🇺🇸",
-        "date": "2 Mar 1994",
-        "method": "Ratification"
-      },
-      {
-        "country": "Iceland",
-        "flag": "🇮🇸",
-        "date": "15 Mar 1994",
-        "method": "Ratification"
-      },
-      {
-        "country": "Canada",
-        "flag": "🇨🇦",
-        "date": "16 Mar 1994",
-        "method": "Ratification"
+        "country": "Finland",
+        "flag": "🇫🇮",
+        "date": "16 Nov 1993",
+        "method": "Acceptance"
       }
     ],
     "Montreal Amendment (1997)": [
@@ -2094,10 +2092,22 @@
         "method": "Ratification"
       },
       {
+        "country": "Republic of Korea",
+        "flag": "🇰🇷",
+        "date": "19 Aug 1998",
+        "method": "Acceptance"
+      },
+      {
         "country": "Norway",
         "flag": "🇳🇴",
         "date": "30 Dec 1998",
         "method": "Ratification"
+      },
+      {
+        "country": "Australia",
+        "flag": "🇦🇺",
+        "date": "5 Jan 1999",
+        "method": "Acceptance"
       },
       {
         "country": "Germany",
@@ -2119,7 +2129,7 @@
       },
       {
         "country": "St. Kitts and Nevis",
-        "flag": "🇰🇳",
+        "flag": "",
         "date": "25 Feb 1999",
         "method": "Ratification"
       },
@@ -2127,18 +2137,6 @@
         "country": "Panama",
         "flag": "🇵🇦",
         "date": "5 Mar 1999",
-        "method": "Ratification"
-      },
-      {
-        "country": "New Zealand",
-        "flag": "🇳🇿",
-        "date": "3 Jun 1999",
-        "method": "Ratification"
-      },
-      {
-        "country": "Trinidad and Tobago",
-        "flag": "🇹🇹",
-        "date": "10 Jun 1999",
         "method": "Ratification"
       }
     ],
@@ -2148,6 +2146,12 @@
         "flag": "🇨🇱",
         "date": "3 May 2000",
         "method": "Ratification"
+      },
+      {
+        "country": "Gabon",
+        "flag": "🇬🇦",
+        "date": "4 Dec 2000",
+        "method": "Accession"
       },
       {
         "country": "Luxembourg",
@@ -2162,51 +2166,51 @@
         "method": "Ratification"
       },
       {
+        "country": "Canada",
+        "flag": "🇨🇦",
+        "date": "9 Feb 2001",
+        "method": "Acceptance"
+      },
+      {
+        "country": "Czech Republic",
+        "flag": "🇨🇿",
+        "date": "9 May 2001",
+        "method": "Acceptance"
+      },
+      {
+        "country": "Palau",
+        "flag": "🇵🇼",
+        "date": "29 May 2001",
+        "method": "Accession"
+      },
+      {
         "country": "New Zealand",
         "flag": "🇳🇿",
         "date": "8 Jun 2001",
         "method": "Ratification"
       },
       {
-        "country": "United Kingdom of Great Britain and Northern Ireland",
-        "flag": "🇬🇧",
-        "date": "12 Oct 2001",
-        "method": "Ratification"
+        "country": "Finland",
+        "flag": "🇫🇮",
+        "date": "18 Jun 2001",
+        "method": "Acceptance"
       },
       {
-        "country": "Malaysia",
-        "flag": "🇲🇾",
-        "date": "26 Oct 2001",
-        "method": "Ratification"
-      },
-      {
-        "country": "Norway",
-        "flag": "🇳🇴",
-        "date": "29 Nov 2001",
-        "method": "Ratification"
-      },
-      {
-        "country": "Panama",
-        "flag": "🇵🇦",
-        "date": "5 Dec 2001",
-        "method": "Ratification"
-      },
-      {
-        "country": "St. Lucia",
-        "flag": "🇱🇨",
-        "date": "12 Dec 2001",
-        "method": "Ratification"
-      },
-      {
-        "country": "Sweden",
-        "flag": "🇸🇪",
-        "date": "28 Mar 2002",
-        "method": "Ratification"
+        "country": "Somalia",
+        "flag": "🇸🇴",
+        "date": "1 Aug 2001",
+        "method": "Accession"
       }
     ],
     "Kigali Amendment (2016)": [
       {
-        "country": "Micronesia",
+        "country": "Mali",
+        "flag": "🇲🇱",
+        "date": "31 Mar 2017",
+        "method": "Acceptance"
+      },
+      {
+        "country": "Micronesia (Federated States of)",
         "flag": "🇫🇲",
         "date": "12 May 2017",
         "method": "Ratification"
@@ -2254,31 +2258,25 @@
         "method": "Ratification"
       },
       {
-        "country": "Canada",
-        "flag": "🇨🇦",
-        "date": "3 Nov 2017",
-        "method": "Ratification"
-      },
-      {
-        "country": "Maldives",
-        "flag": "🇲🇻",
-        "date": "13 Nov 2017",
-        "method": "Ratification"
+        "country": "Australia",
+        "flag": "🇦🇺",
+        "date": "27 Oct 2017",
+        "method": "Acceptance"
       }
     ]
   },
   "summary": {
-    "totalPartiesMP": 197,
+    "totalPartiesMP": 198,
     "instruments": 7,
-    "kigaliAgreements": 172,
-    "kigaliCountriesMapped": 171,
-    "yearsCovered": 42,
-    "ratificationShareKigali": 72.7,
-    "ratificationShareMP": 19.3,
+    "kigaliAgreements": 173,
+    "kigaliCountriesMapped": 172,
+    "yearsCovered": 38,
+    "ratificationShareKigali": 72.8,
+    "ratificationShareMP": 19.2,
     "allSixInstruments": 171,
     "firstFiveKigaliA5": "5/5",
     "longestActionGap": 9,
-    "kigaliRatifications": 125,
+    "kigaliRatifications": 126,
     "kigaliPeakYearAgreements": 42
   },
   "analysisCards": [],
