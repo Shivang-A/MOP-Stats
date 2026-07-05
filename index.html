@@ -19,13 +19,13 @@
     <div class="eyebrow">IGSD · Montreal Protocol Analytics · 10 Year Anniversary</div>
     <h1>Montreal Protocol <span>Agreement</span> Dashboard</h1>
     <p>An analysis of how parties agreed to the Vienna Convention, the Montreal Protocol, and its five Amendments,
-       tracking the pace, method, and leadership of global ozone protection from 1985 to 2026.</p>
+       tracking the pace, method, and leadership of global ozone protection from 1985 to 2025.</p>
 
     <div class="hero-kpis hero-kpis-six" data-stagger>
-      <div class="hero-kpi"><strong data-kpi="totalPartiesMP">197</strong><span>Montreal Protocol parties</span></div>
+      <div class="hero-kpi"><strong data-kpi="totalPartiesMP">198</strong><span>Montreal Protocol parties</span></div>
       <div class="hero-kpi"><strong data-kpi="instruments">7</strong><span>Instruments tracked</span></div>
-      <div class="hero-kpi"><strong data-kpi="kigaliAgreements">172</strong><span>Kigali agreements</span></div>
-      <div class="hero-kpi"><strong data-kpi="kigaliRatifications">125</strong><span>Kigali ratifications</span></div>
+      <div class="hero-kpi"><strong data-kpi="kigaliAgreements">173</strong><span>Kigali agreements</span></div>
+      <div class="hero-kpi"><strong data-kpi="kigaliRatifications">126</strong><span>Kigali ratifications</span></div>
       <div class="hero-kpi"><strong data-kpi="firstFiveKigaliA5">5/5</strong><span>First Kigali movers were A5</span></div>
       <div class="hero-kpi"><strong data-kpi="kigaliPeakYearAgreements">42</strong><span>Peak Kigali year: 2018</span></div>
     </div>
@@ -41,11 +41,13 @@
      with the Protocol's adjustments and key decisions marked along the timeline.</p>
   <div class="rule"></div>
   <div class="card scroll-zoom" id="card1" data-anim="rise">
-    <button class="dl-btn" onclick="dl('card1','cumulative_agreements')">↓ PNG</button>
+    <button class="dl-btn" onclick="dlLandscape()" title="Download the print-ready landscape PNG">↓ PNG</button>
     <h3>Evolution of the Montreal Protocol: from Ozone Protection to Climate Mitigation</h3>
     <div class="sub">First-agreement date per party across Ratification, Acceptance, Approval,
       Accession and Succession. Era bands mark the shift from ozone protection to climate mitigation and energy efficiency.</div>
-    <div class="chartbox"><canvas id="cumChart"></canvas></div>
+    <div class="chartbox"><canvas id="cumChart"></canvas><div id="cumTip" class="cum-tip" aria-hidden="true"></div></div>
+    <div id="cumLegend" class="cum-legend"></div>
+    <div class="cum-hint" style="text-align:center;font-size:12.5px;color:#8a8478;font-style:italic;margin:2px 0 4px;">Tip — click any series in the legend to hide or show it.</div>
     <div class="foot">Source: UN Treaty Collection · Analysis: IGSD</div>
   </div>
 </section>
@@ -60,9 +62,10 @@
   <div class="card scroll-zoom" id="card2" data-anim="rise">
     <button class="dl-btn" onclick="dl('card2','ratifications_per_year')">↓ PNG</button>
     <h3>Ratifications per Year by Party Group</h3>
-    <div class="sub">Darker = non-Article 5 (developed); lighter = Article 5 (developing). Shared vertical scale.</div>
+    <div class="sub">Darker = non-Article 5 (developed); lighter = Article 5 (developing). Shared vertical scale.
+      Use the ↓ PNG button on any panel to export that instrument on its own.</div>
     <div class="sm-grid" id="smGrid" data-stagger></div>
-    <!--<div class="foot">Ratifications only — excludes acceptance, approval, accession, succession.</div>-->
+    <div class="foot">Ratifications only — excludes acceptance, approval, accession, succession.</div>
   </div>
 </section>
 
@@ -106,6 +109,8 @@
   <div class="card scroll-zoom" id="card5" data-anim="rise">
     <button class="dl-btn" onclick="dl('card5','top10_parties')">↓ PNG</button>
     <h3>First 10 Parties to Ratify</h3>
+    <div class="sub">The first ten parties for each instrument, ordered by the earliest formal treaty action date.
+      Use the ↓ PNG button on any card to export that instrument on its own.</div>
     <div class="t10-grid" id="t10grid" data-stagger></div>
   </div>
 </section>
