@@ -273,7 +273,7 @@ const vlinePlugin = {
       ctx.save();
       ctx.font = `${g}px "Source Sans 3", sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.lineWidth = g*0.23; ctx.strokeStyle = 'rgba(255,255,255,.98)';
+      ctx.lineWidth = g*0.23; // ctx.strokeStyle = 'rgba(255,255,255,.98)';
       ctx.strokeText('\u2605', sx, sy);
       ctx.fillStyle = '#B8902A'; ctx.fillText('\u2605', sx, sy);
       ctx.beginPath();
