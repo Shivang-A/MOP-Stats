@@ -50,7 +50,9 @@ const CUM_BASE = {
    wide canvas, 1 logical px ~= 0.75pt, so 15px ~= 11pt in the book. */
 const CUM_EXPORT = {
   fs: 1.30,          // annotation scale (era labels, star, markers)
-  tick: 13, axisTitle: 16,
+  // Sized for the book: on the 864px-wide logical canvas 1px ~= 0.75pt at 9in
+  // wide, so tick 19 ~= 14pt at 9in and still ~9.5pt if placed at 6in wide.
+  tick: 19, axisTitle: 23,
   title: 25, titleMin: 17, subtitle: 13, subtitleMin: 10, source: 12,
   rot: 11, rotBlue: 11, mlf: 10.5,   // smaller rotated vertical-line labels for print
   legendFont: 15, legendBarW: 46, legendBarH: 15,
@@ -260,22 +262,6 @@ const vlinePlugin = {
     eraLabel({lines:['Ozone and Climate','Protection'], start:2016, end:LAST_YEAR(chart),
       textY:T - 56*S, bracketY:T - 39*S, color:green, size:eSize});
 
-    // Star marks 2009 (universal ratification of the VC and the MP). No caption:
-    // the 2009 marker line beneath it carries the label.
-    const xStar = px(2009);
-    if(xStar !== null && y){
-      const sx = clampX(xStar);
-      const sy = Math.max(chartArea.top + 14, Math.min(chartArea.bottom - 48, y.getPixelForValue(196)));
-      const g = CUM_BASE.starGlyph*S;
-      ctx.save();
-      ctx.font = `${g}px "Source Sans 3", sans-serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.lineWidth = g*0.23;
-      ctx.strokeText('\u2605', sx, sy);
-      ctx.fillStyle = '#B8902A'; ctx.fillText('\u2605', sx, sy);
-      ctx.restore();
-    }
-
     const requested = ev.filter(item => {
       const yr = item.year ?? item[0]; const label = String(item.label ?? item[1]);
       return (yr === 1990 && label.includes('London Adjustment')) ||
@@ -335,6 +321,9 @@ const vlinePlugin = {
         const w = ctx.measureText(pretty).width;
         // reads upward; spans [yy, yy+w]. Clamp so the bottom never crosses the axis.
         let yy = bold ? chartArea.top + 112*S : chartArea.top + 150*S;
+        // the 2009 star sits above this marker; start its label lower so the
+        // star and its halo never cover the text
+        if(yr === 2009) yy += 40*S;
         yy = Math.min(yy, chartArea.bottom - pad - w);
         yy = Math.max(yy, chartArea.top + pad);
         // Near the right edge (e.g. the 2026 marker) put the label on the inside
@@ -350,6 +339,29 @@ const vlinePlugin = {
       }
       ctx.restore();
     });
+
+    // Star marks 2009 (universal ratification of the VC and the MP). No caption:
+    // the 2009 marker line beneath it carries the label.
+    const xStar = px(2009);
+    if(xStar !== null && y){
+      const sx = clampX(xStar);
+      // Sit just above the saturated curves so nothing appears to run through it.
+      const sy = Math.max(chartArea.top + 15*S,
+                 Math.min(chartArea.bottom - 48, y.getPixelForValue(203)));
+      const g = CUM_BASE.starGlyph*S;
+      ctx.save();
+      ctx.font = `${g}px "Source Sans 3", sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      // Explicit white halo: drawn last, so it cleanly separates the star from
+      // the marker line and the curves behind it.
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = g*0.26;
+      ctx.strokeText('\u2605', sx, sy);
+      ctx.fillStyle = '#B8902A'; ctx.fillText('\u2605', sx, sy);
+      ctx.restore();
+    }
+
     ctx.restore();
 
     // Export-only chrome: title / subtitle / source / on-canvas legend.
