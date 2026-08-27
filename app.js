@@ -41,7 +41,7 @@ const CONFIG = {
 
 /* Original Figure-1 base font sizes (px). Everything scales off these. */
 const CUM_BASE = {
-  tick: 14, axisTitle: 15, era: 11.8, eraShort: 11.8,
+  tick: 18, axisTitle: 15, era: 11.8, eraShort: 11.8,
   star: 11.3, starGlyph: 24, blueBar: 12.8, marker: 11.6, mlf: 11,
 };
 
@@ -52,7 +52,7 @@ const CUM_EXPORT = {
   fs: 1.30,          // annotation scale (era labels, star, markers)
   // Sized for the book: on the 864px-wide logical canvas 1px ~= 0.75pt at 9in
   // wide, so tick 19 ~= 14pt at 9in and still ~9.5pt if placed at 6in wide.
-  tick: 19, axisTitle: 23,
+  tick: 24, axisTitle: 23,
   title: 25, titleMin: 17, subtitle: 13, subtitleMin: 10, source: 12,
   rot: 11, rotBlue: 11, mlf: 10.5,   // smaller rotated vertical-line labels for print
   legendFont: 15, legendBarW: 46, legendBarH: 15,
