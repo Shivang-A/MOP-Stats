@@ -41,7 +41,7 @@ const CONFIG = {
 
 /* Original Figure-1 base font sizes (px). Everything scales off these. */
 const CUM_BASE = {
-  tick: 18, axisTitle: 15, era: 11.8, eraShort: 11.8,
+  tick: 17, axisTitle: 19, era: 11.8, eraShort: 11.8,
   star: 11.3, starGlyph: 24, blueBar: 12.8, marker: 11.6, mlf: 11,
 };
 
@@ -52,7 +52,7 @@ const CUM_EXPORT = {
   fs: 1.30,          // annotation scale (era labels, star, markers)
   // Sized for the book: on the 864px-wide logical canvas 1px ~= 0.75pt at 9in
   // wide, so tick 19 ~= 14pt at 9in and still ~9.5pt if placed at 6in wide.
-  tick: 24, axisTitle: 23,
+  tick: 19, axisTitle: 23,
   title: 25, titleMin: 17, subtitle: 13, subtitleMin: 10, source: 12,
   rot: 11, rotBlue: 11, mlf: 10.5,   // smaller rotated vertical-line labels for print
   legendFont: 15, legendBarW: 46, legendBarH: 15,
@@ -262,11 +262,8 @@ const vlinePlugin = {
     eraLabel({lines:['Ozone and Climate','Protection'], start:2016, end:LAST_YEAR(chart),
       textY:T - 56*S, bracketY:T - 39*S, color:green, size:eSize});
 
-    const requested = ev.filter(item => {
-      const yr = item.year ?? item[0]; const label = String(item.label ?? item[1]);
-      return (yr === 1990 && label.includes('London Adjustment')) ||
-             yr === 2007 || yr === 2009 || yr === 2023 || yr === 2026;
-    });
+    // cumEvents() has already selected what to draw (see the Milestones sheet).
+    const requested = ev;
     requested.forEach((item)=>{
       const yr = item.year ?? item[0]; const label = item.label ?? item[1];
       const type = item.type ?? item[2] ?? 'event';
@@ -467,8 +464,9 @@ function cumDatasets(){
 }
 function cumEvents(){
   return D.milestones
-    .filter(m => (m[0]===1990 && String(m[1]).includes('London Adjustment')) ||
-                 m[0]===2007 || m[0]===2009 || m[0]===2023 || m[0]===2026)
+    // Driven entirely by the Milestones sheet: Type 'line' = reference only
+    // (the instrument already has its own curve), anything else is drawn.
+    .filter(m => String(m[2]||'').trim().toLowerCase() !== 'line')
     .map(m=>({year:m[0],label:m[1],type:m[2]}));
 }
 
@@ -557,11 +555,15 @@ function buildCum(){
       },
       scales:{
         x:{grid:{color:'rgba(0,0,0,0.04)'},
-          ticks:{maxTicksLimit:14,color:'#6b7686',font:{family:'Source Sans 3'}},
-          title:{display:true,text:'Year',color:'#5a6472'}},
+          ticks:{maxTicksLimit:14,color:'#6b7686',
+                 font:{family:'Source Sans 3',size:CUM_BASE.tick}},
+          title:{display:true,text:'Year',color:'#5a6472',
+                 font:{family:'Source Sans 3',size:CUM_BASE.axisTitle,weight:'600'}}},
         y:{beginAtZero:true,max:210,grid:{color:'rgba(0,0,0,0.06)'},
-          ticks:{color:'#6b7686',font:{family:'Source Sans 3'}},
-          title:{display:true,text:'Cumulative parties',color:'#5a6472'}}
+          ticks:{color:'#6b7686',
+                 font:{family:'Source Sans 3',size:CUM_BASE.tick}},
+          title:{display:true,text:'Cumulative parties',color:'#5a6472',
+                 font:{family:'Source Sans 3',size:CUM_BASE.axisTitle,weight:'600'}}}
       }
     }
   });
