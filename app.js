@@ -17,6 +17,16 @@
 /* ============================================================
    CONFIG — tune everything here, then reload.
    ============================================================ */
+/* Must stay quoted: `30px Source Sans 3` is invalid CSS, so canvas silently
+   ignores it and keeps the previous font. That made font sizes appear frozen. */
+/* Y-axis ceiling. Sean asked for 193 (UN member states), but the treaties have
+   198 Parties -- the EU, Holy See, Cook Islands, Niue and the State of Palestine
+   are Parties without being UN members -- so 193 would clip the top of every
+   curve. 200 keeps all the data and still removes the dead space that 210 left. */
+const CUM_Y_MAX = 200;
+
+const FONT_FAMILY = "'Source Sans 3', sans-serif";
+
 const CONFIG = {
   // Native-render resolution for the print-grade figures (Fig 1 landscape,
   // Fig 2 per-instrument). 300 = standard print, 600 = luxurious, 800 = max.
@@ -41,7 +51,7 @@ const CONFIG = {
 
 /* Original Figure-1 base font sizes (px). Everything scales off these. */
 const CUM_BASE = {
-  tick: 17, axisTitle: 19, era: 11.8, eraShort: 11.8,
+  tick: 12.5, axisTitle: 13.5, era: 11.8, eraShort: 11.8,
   star: 11.3, starGlyph: 24, blueBar: 12.8, marker: 11.6, mlf: 11,
 };
 
@@ -52,7 +62,7 @@ const CUM_EXPORT = {
   fs: 1.30,          // annotation scale (era labels, star, markers)
   // Sized for the book: on the 864px-wide logical canvas 1px ~= 0.75pt at 9in
   // wide, so tick 19 ~= 14pt at 9in and still ~9.5pt if placed at 6in wide.
-  tick: 19, axisTitle: 23,
+  tick: 15, axisTitle: 16.5,
   title: 25, titleMin: 17, subtitle: 13, subtitleMin: 10, source: 12,
   rot: 11, rotBlue: 11, mlf: 10.5,   // smaller rotated vertical-line labels for print
   legendFont: 15, legendBarW: 46, legendBarH: 15,
@@ -290,10 +300,15 @@ const vlinePlugin = {
 
       ctx.save();
       const isMLF = yr === 2023;
+      // Long two-part labels render as two stacked rotated lines so they stay
+      // full size instead of being shrunk to fit the plot height.
+      const isTwoLine = isMLF || yr === 2009;
       const exp = !!(opts && opts.exportMode);
       const pad = 6*S;
-      if(isMLF){
-        const lines = ['$1B MLF replenishment', '+ Decision XXXV/13 (Stop Dumping)'];
+      if(isTwoLine){
+        const lines = isMLF
+          ? ['$1B MLF replenishment', '+ Decision XXXV/13 (Stop Dumping)']
+          : ['Universal Ratification of', 'Vienna Convention and Montreal Protocol'];
         const rsize = exp ? CUM_EXPORT.mlf : CUM_BASE.mlf*S;
         ctx.font = `800 ${rsize}px "Source Sans 3", sans-serif`;
         const w = Math.max(...lines.map(l=>ctx.measureText(l).width));
@@ -307,15 +322,26 @@ const vlinePlugin = {
         lines.forEach((ln,i)=>{
           const off = (i===0)? -7*S : 7*S;
           ctx.lineWidth = 4.5; ctx.lineJoin='round'; ctx.strokeStyle='rgba(255,255,255,0.97)';
-          ctx.strokeText(ln, 0, off); ctx.fillStyle='#57482A'; ctx.fillText(ln, 0, off);
+          ctx.strokeText(ln, 0, off);
+          ctx.fillStyle = isMLF ? '#57482A' : '#1C5E8C';
+          ctx.fillText(ln, 0, off);
         });
       }else{
         const bold = isBlueBar || isSolid;
         const rsize = exp
           ? (bold ? CUM_EXPORT.rotBlue : CUM_EXPORT.rot)
           : (bold ? CUM_BASE.blueBar*S : CUM_BASE.marker*S);
-        ctx.font = `800 ${rsize}px "Source Sans 3", sans-serif`;
-        const w = ctx.measureText(pretty).width;
+        let rs = rsize;
+        ctx.font = `800 ${rs}px "Source Sans 3", sans-serif`;
+        let w = ctx.measureText(pretty).width;
+        // Long labels (e.g. the spelled-out 2009 one) read upward and can be taller
+        // than the plot. Shrink to fit rather than letting them run off the axis.
+        const avail = (chartArea.bottom - chartArea.top) - 2*pad;
+        if(w > avail && w > 0){
+          rs = Math.max(rs * (avail / w), rsize * 0.62);
+          ctx.font = `800 ${rs}px "Source Sans 3", sans-serif`;
+          w = ctx.measureText(pretty).width;
+        }
         // reads upward; spans [yy, yy+w]. Clamp so the bottom never crosses the axis.
         let yy = bold ? chartArea.top + 112*S : chartArea.top + 150*S;
         // the 2009 star sits above this marker; start its label lower so the
@@ -457,8 +483,13 @@ function cumDatasets(){
     return {
       label:name, data:cum.series[name].data,
       borderColor:INST_COLORS[name], backgroundColor:INST_COLORS[name],
-      borderWidth:(kig||vie)?3.2:2.2, borderDash:kig?[7,4]:[],
-      pointRadius:0, pointHoverRadius:5, tension:0.25, spanGaps:true
+      // Plotted as dots, not a connected curve: a line visually smooths over the
+      // year-to-year variation, which is exactly what we want readers to see.
+      showLine:false,
+      borderWidth:0, borderDash:[],
+      pointRadius:(kig||vie)?3.4:3.0, pointHoverRadius:6,
+      pointBackgroundColor:INST_COLORS[name], pointBorderColor:INST_COLORS[name],
+      pointBorderWidth:0, spanGaps:false
     };
   });
 }
@@ -524,10 +555,10 @@ function buildCumLegend(chart){
 function applyCumFonts(chart, fs){
   const b = CUM_BASE, o = chart.options;
   o.plugins.vlines.fs = fs;
-  o.scales.x.ticks.font = {family:'Source Sans 3', size:b.tick*fs};
-  o.scales.x.title.font = {family:'Source Sans 3', size:b.axisTitle*fs, weight:'600'};
-  o.scales.y.ticks.font = {family:'Source Sans 3', size:b.tick*fs};
-  o.scales.y.title.font = {family:'Source Sans 3', size:b.axisTitle*fs, weight:'600'};
+  o.scales.x.ticks.font = {family:FONT_FAMILY, size:b.tick*fs};
+  o.scales.x.title.font = {family:FONT_FAMILY, size:b.axisTitle*fs, weight:'600'};
+  o.scales.y.ticks.font = {family:FONT_FAMILY, size:b.tick*fs};
+  o.scales.y.title.font = {family:FONT_FAMILY, size:b.axisTitle*fs, weight:'600'};
   o.layout.padding.top = Math.round(84*fs + 40);
   chart.update('none');
 }
@@ -556,14 +587,14 @@ function buildCum(){
       scales:{
         x:{grid:{color:'rgba(0,0,0,0.04)'},
           ticks:{maxTicksLimit:14,color:'#6b7686',
-                 font:{family:'Source Sans 3',size:CUM_BASE.tick}},
+                 font:{family:FONT_FAMILY,size:CUM_BASE.tick}},
           title:{display:true,text:'Year',color:'#5a6472',
-                 font:{family:'Source Sans 3',size:CUM_BASE.axisTitle,weight:'600'}}},
-        y:{beginAtZero:true,max:210,grid:{color:'rgba(0,0,0,0.06)'},
+                 font:{family:FONT_FAMILY,size:CUM_BASE.axisTitle,weight:'600'}}},
+        y:{beginAtZero:true,max:CUM_Y_MAX,grid:{color:'rgba(0,0,0,0.06)'},
           ticks:{color:'#6b7686',
-                 font:{family:'Source Sans 3',size:CUM_BASE.tick}},
-          title:{display:true,text:'Cumulative parties',color:'#5a6472',
-                 font:{family:'Source Sans 3',size:CUM_BASE.axisTitle,weight:'600'}}}
+                 font:{family:FONT_FAMILY,size:CUM_BASE.tick}},
+          title:{display:true,text:'Cumulative Ratifications by Parties',color:'#5a6472',
+                 font:{family:FONT_FAMILY,size:CUM_BASE.axisTitle,weight:'600'}}}
       }
     }
   });
@@ -604,11 +635,11 @@ async function dlLandscape(){
       },
       scales:{
         x:{grid:{color:'rgba(0,0,0,0.05)'},
-          ticks:{maxTicksLimit:14,color:'#5a6472',font:{family:'Source Sans 3',size:E.tick}},
-          title:{display:true,text:'Year',color:'#4a5462',font:{family:'Source Sans 3',size:E.axisTitle,weight:'600'}}},
-        y:{beginAtZero:true,max:210,grid:{color:'rgba(0,0,0,0.07)'},
-          ticks:{color:'#5a6472',font:{family:'Source Sans 3',size:E.tick}},
-          title:{display:true,text:'Cumulative parties',color:'#4a5462',font:{family:'Source Sans 3',size:E.axisTitle,weight:'600'}}}
+          ticks:{maxTicksLimit:14,color:'#5a6472',font:{family:FONT_FAMILY,size:E.tick}},
+          title:{display:true,text:'Year',color:'#4a5462',font:{family:FONT_FAMILY,size:E.axisTitle,weight:'600'}}},
+        y:{beginAtZero:true,max:CUM_Y_MAX,grid:{color:'rgba(0,0,0,0.07)'},
+          ticks:{color:'#5a6472',font:{family:FONT_FAMILY,size:E.tick}},
+          title:{display:true,text:'Cumulative Ratifications by Parties',color:'#4a5462',font:{family:FONT_FAMILY,size:E.axisTitle,weight:'600'}}}
       }
     }
   });
@@ -656,7 +687,7 @@ function buildRatif(){
         {label:'A5',data:a5,backgroundColor:light,stack:'s'}]},
       options:{responsive:true,maintainAspectRatio:false,
         animation:{duration:1000,easing:'easeOutQuart'},
-        plugins:{legend:{display:true,labels:{boxWidth:12,boxHeight:12,font:{size:12,family:'Source Sans 3'}}},
+        plugins:{legend:{display:true,labels:{boxWidth:12,boxHeight:12,font:{size:12,family:FONT_FAMILY}}},
           tooltip:{backgroundColor:'#17324D'}},
         scales:{x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,font:{size:11},color:'#7c8494'}},
           y:{stacked:true,max:35,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},color:'#7c8494'}}}}
@@ -687,17 +718,17 @@ async function dlRatifPanel(name){
         title:{display:true,text:name,color:'#17324D',
           font:{size:23,weight:'700',family:'Playfair Display'},padding:{bottom:2}},
         subtitle:{display:true,text:'Ratifications per year \u00b7 darker = non-Article 5, lighter = Article 5',
-          color:'#697386',font:{size:13,family:'Source Sans 3'},padding:{bottom:14}},
+          color:'#697386',font:{size:13,family:FONT_FAMILY},padding:{bottom:14}},
         legend:{display:true,position:'top',align:'end',
-          labels:{boxWidth:24,boxHeight:14,font:{size:14,family:'Source Sans 3'},padding:14}},
+          labels:{boxWidth:24,boxHeight:14,font:{size:14,family:FONT_FAMILY},padding:14}},
         tooltip:{enabled:false}
       },
       scales:{
         x:{stacked:true,grid:{display:false},
-          ticks:{maxTicksLimit:12,font:{size:12,family:'Source Sans 3'},color:'#5a6472'}},
+          ticks:{maxTicksLimit:12,font:{size:12,family:FONT_FAMILY},color:'#5a6472'}},
         y:{stacked:true,max:35,grid:{color:'rgba(0,0,0,0.06)'},
-          ticks:{font:{size:12,family:'Source Sans 3'},color:'#5a6472'},
-          title:{display:true,text:'Ratifications',font:{size:14,family:'Source Sans 3'},color:'#5a6472'}}
+          ticks:{font:{size:12,family:FONT_FAMILY},color:'#5a6472'},
+          title:{display:true,text:'Ratifications',font:{size:14,family:FONT_FAMILY},color:'#5a6472'}}
       }
     }
   });
@@ -738,8 +769,8 @@ function buildMap(){
                 [0.78,'#E8C547'],[0.9,'#D98A3D'],[1,'#B0392B']],
     zmin:2017,zmax:2026,
     marker:{line:{color:'#fff',width:0.4}},
-    colorbar:{title:{text:'Year joined',font:{family:'Source Sans 3',size:16}},
-      tickfont:{family:'Source Sans 3',size:14},
+    colorbar:{title:{text:'Year joined',font:{family:FONT_FAMILY,size:16}},
+      tickfont:{family:FONT_FAMILY,size:14},
       tickvals:[2017,2018,2019,2020,2021,2022,2023,2024,2025,2026],
       tickformat:'d',len:0.8,thickness:20,outlinewidth:0}
   }],{
@@ -749,7 +780,7 @@ function buildMap(){
     paper_bgcolor:'#FBF8F3',
     margin:{l:8,r:8,t:8,b:8},
     height:600,
-    font:{family:'Source Sans 3',size:15}
+    font:{family:FONT_FAMILY,size:15}
   },{
     responsive:true,
     displaylogo:false,
