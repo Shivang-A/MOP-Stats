@@ -371,7 +371,9 @@ const vlinePlugin = {
       // Sit just above the saturated curves so nothing appears to run through it.
       const sy = Math.max(chartArea.top + 15*S,
                  Math.min(chartArea.bottom - 48, y.getPixelForValue(203)));
-      const g = CUM_BASE.starGlyph*S;
+      // Scale the star down on narrow plots so it doesn't swamp a phone screen.
+      const narrow = Math.min(1, chartArea.width / 620);
+      const g = CUM_BASE.starGlyph * S * (0.55 + 0.45*narrow);
       ctx.save();
       ctx.font = `${g}px "Source Sans 3", sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -756,9 +758,41 @@ function buildF30(){
 }
 
 /* ---------- 04 map ---------- */
+
+/* ---------- Map legend (replaces the Plotly colorbar) ----------
+   Same stops as the choropleth colorscale, sampled per year. */
+const MAP_SCALE = [[0,'#1A4C7C'],[0.25,'#3A8FA8'],[0.45,'#52C4C9'],[0.6,'#7BC47F'],
+                   [0.78,'#E8C547'],[0.9,'#D98A3D'],[1,'#B0392B']];
+function hex2rgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+function scaleColour(t){
+  t = Math.max(0, Math.min(1, t));
+  for(let i=0;i<MAP_SCALE.length-1;i++){
+    const [p0,c0]=MAP_SCALE[i], [p1,c1]=MAP_SCALE[i+1];
+    if(t>=p0 && t<=p1){
+      const f=(p1===p0)?0:(t-p0)/(p1-p0);
+      const a=hex2rgb(c0), b=hex2rgb(c1);
+      return `rgb(${a.map((v,k)=>Math.round(v+(b[k]-v)*f)).join(',')})`;
+    }
+  }
+  return MAP_SCALE[MAP_SCALE.length-1][1];
+}
+function buildMapLegend(){
+  const box=document.getElementById('mapLegend');
+  if(!box || !D || !D.kigali_map) return;
+  const years=[...new Set(D.kigali_map.map(r=>r.year))].sort((a,b)=>a-b);
+  const lo=Math.min(...years), hi=Math.max(...years);
+  box.innerHTML =
+    '<span class="ml-title">Year joined</span>' +
+    years.map(y=>{
+      const c=scaleColour(hi===lo?0:(y-lo)/(hi-lo));
+      return `<span class="ml-item"><i style="background:${c}"></i>${y}</span>`;
+    }).join('');
+}
+
 function buildMap(){
   if(mapBuilt) return; mapBuilt = true;
   const rows=D.kigali_map;
+  buildMapLegend();
   return Plotly.newPlot('mapDiv',[{
     type:'choropleth',
     locations:rows.map(r=>r.iso),
@@ -769,10 +803,11 @@ function buildMap(){
                 [0.78,'#E8C547'],[0.9,'#D98A3D'],[1,'#B0392B']],
     zmin:2017,zmax:2026,
     marker:{line:{color:'#fff',width:0.4}},
-    colorbar:{title:{text:'Year joined',font:{family:FONT_FAMILY,size:16}},
-      tickfont:{family:FONT_FAMILY,size:14},
-      tickvals:[2017,2018,2019,2020,2021,2022,2023,2024,2025,2026],
-      tickformat:'d',len:0.8,thickness:20,outlinewidth:0}
+    // Plotly's own colorbar is switched off: its gradient fill lives in an SVG
+    // <defs> reference that does not survive Plotly.toImage, so it vanished from
+    // downloaded PNGs. We draw an HTML legend instead (buildMapLegend), which
+    // exports reliably and wraps neatly on small screens.
+    showscale:false
   }],{
     geo:{projection:{type:'natural earth'},showframe:false,showocean:false,
       showland:true,landcolor:'#F0EBE0',coastlinecolor:'#CCC',coastlinewidth:0.4,

@@ -46,7 +46,10 @@
     <h3>Evolution of the Montreal Protocol: from Ozone Protection to Climate Mitigation</h3>
     <div class="sub">First-agreement date per party across Ratification, Acceptance, Approval,
       Accession and Succession. Era bands mark the shift from ozone protection to climate mitigation and energy efficiency.</div>
-    <div class="chartbox"><canvas id="cumChart"></canvas><div id="cumTip" class="cum-tip" aria-hidden="true"></div></div>
+    <div class="chart-scroll">
+      <div class="chartbox"><canvas id="cumChart"></canvas><div id="cumTip" class="cum-tip" aria-hidden="true"></div></div>
+    </div>
+    <div class="swipe-hint" aria-hidden="true">Swipe sideways to see the full timeline</div>
     <div id="cumLegend" class="cum-legend"></div>
     <div class="cum-hint" style="text-align:center;font-size:12.5px;color:#8a8478;font-style:italic;margin:2px 0 4px;">Tip — click any series in the legend to hide or show it.</div>
     <div class="foot">Source: UN Treaty Collection · Analysis: IGSD</div>
@@ -96,7 +99,8 @@
     <button class="dl-btn" onclick="dl('card4','kigali_parties_card')">↓ PNG</button>
     <h3>Parties to Kigali Amendment by Date</h3>
     <div class="sub">PNG button now downloads the full card, including this title and note. The map displays country-level parties; the EU is counted in the dashboard totals.</div>
-    <div id="mapDiv" style="height:600px;"></div>
+    <div id="mapDiv"></div>
+    <div id="mapLegend" class="map-legend" aria-label="Year joined"></div>
     <div class="foot">Hover any country for details · Country map excludes the European Union as a non-country party.</div>
   </div>
 </section>

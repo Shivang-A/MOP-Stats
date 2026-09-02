@@ -291,3 +291,46 @@ footer{
 .export-big .sm-panel h4{font-size:24px;}
 .export-big h3{font-size:28px;}
 .export-big .sub{font-size:16px;}
+
+/* ---------- map legend (replaces the Plotly colorbar so it survives export) ---------- */
+#mapDiv{height:600px;}
+.map-legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;
+  margin:10px 2px 2px;font-size:13.5px;color:#4a5462;}
+.map-legend .ml-title{font-weight:700;color:#17324D;margin-right:4px;}
+.map-legend .ml-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.map-legend .ml-item i{width:20px;height:12px;border-radius:2px;display:inline-block;
+  box-shadow:0 0 0 1px rgba(0,0,0,.10);}
+.export-big .map-legend{font-size:19px;gap:8px 22px;}
+.export-big .map-legend .ml-item i{width:28px;height:17px;}
+
+/* ---------- phones: figures need their own treatment, not just column collapse ---------- */
+@media(max-width:560px){
+  .hero h1{font-size:34px;}
+  .hero p{font-size:16px;}
+  h2.sec{font-size:24px;}
+  .chartbox{height:440px;}
+  #mapDiv{height:380px;}
+  .sm-cv{height:150px;}
+  .t10-grid{grid-template-columns:1fr;}
+  .card{padding:20px 14px;border-radius:14px;}
+  section{padding:34px 16px 40px;}
+  .map-legend{font-size:12px;gap:5px 12px;}
+  .f30 .dt{width:96px;font-size:12px;}
+  .f30 .nm{font-size:13.5px;}
+  .f30 .rk{width:30px;}
+}
+
+/* ---------- Figure 1 on small screens ----------
+   The chart carries three era brackets and nine dated markers; below roughly
+   700px they collide into an unreadable stack. Rather than drop annotations the
+   team specified, the plot keeps its working width and scrolls horizontally. */
+.chart-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;}
+.swipe-hint{display:none;}
+@media(max-width:700px){
+  .chart-scroll{margin:0 -6px;padding-bottom:4px;}
+  .chart-scroll .chartbox{min-width:760px;height:460px;}
+  .swipe-hint{display:block;margin:6px 2px 0;font-size:12px;color:#8b8578;font-style:italic;}
+}
+/* exports must never inherit the scroll clip */
+.export-freeze .chart-scroll{overflow:visible;}
+.export-freeze .chart-scroll .chartbox{min-width:0;}
