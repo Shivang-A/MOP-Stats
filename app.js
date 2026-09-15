@@ -25,6 +25,10 @@
    curve. 200 keeps all the data and still removes the dead space that 210 left. */
 const CUM_Y_MAX = 200;
 
+/* Figure 2 ceiling. With every route to binding commitment counted, the busiest
+   single year is 42 (Kigali, 2018), so 35 would clip it. */
+const RATIF_Y_MAX = 45;
+
 const FONT_FAMILY = "'Source Sans 3', sans-serif";
 
 const CONFIG = {
@@ -282,10 +286,12 @@ const vlinePlugin = {
       const isBlueBar = type === 'bluebar' || yr === 2007;
       // 'solid' = a thinner solid marker (2009 universal ratification, 2026 Kigali +10)
       const isSolid  = type === 'solid';
+      // 'event-wide' = a dashed marker drawn heavier (Kigali Amendment, 2016)
+      const isWide   = type === 'event-wide';
       const solidCol = (yr === 2026) ? '#B0392B' : '#1C5E8C';
       if(isBlueBar){
         ctx.fillStyle = 'rgba(29, 95, 120, 0.94)';
-        ctx.fillRect(xp - 3.4*S, chartArea.top, 6.8*S, chartArea.bottom - chartArea.top);
+        ctx.fillRect(xp - 4.5*S, chartArea.top, 9.0*S, chartArea.bottom - chartArea.top);
       }else if(isSolid){
         ctx.fillStyle = solidCol;
         ctx.fillRect(xp - 1.6*S, chartArea.top, 3.2*S, chartArea.bottom - chartArea.top);
@@ -327,7 +333,7 @@ const vlinePlugin = {
           ctx.fillText(ln, 0, off);
         });
       }else{
-        const bold = isBlueBar || isSolid;
+        const bold = isBlueBar || isSolid || isWide;
         const rsize = exp
           ? (bold ? CUM_EXPORT.rotBlue : CUM_EXPORT.rot)
           : (bold ? CUM_BASE.blueBar*S : CUM_BASE.marker*S);
@@ -692,7 +698,7 @@ function buildRatif(){
         plugins:{legend:{display:true,labels:{boxWidth:12,boxHeight:12,font:{size:12,family:FONT_FAMILY}}},
           tooltip:{backgroundColor:'#17324D'}},
         scales:{x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,font:{size:11},color:'#7c8494'}},
-          y:{stacked:true,max:35,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},color:'#7c8494'}}}}
+          y:{stacked:true,max:RATIF_Y_MAX,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},color:'#7c8494'}}}}
     });
     ratifCharts.push({name, chart});
   });
@@ -728,7 +734,7 @@ async function dlRatifPanel(name){
       scales:{
         x:{stacked:true,grid:{display:false},
           ticks:{maxTicksLimit:12,font:{size:12,family:FONT_FAMILY},color:'#5a6472'}},
-        y:{stacked:true,max:35,grid:{color:'rgba(0,0,0,0.06)'},
+        y:{stacked:true,max:RATIF_Y_MAX,grid:{color:'rgba(0,0,0,0.06)'},
           ticks:{font:{size:12,family:FONT_FAMILY},color:'#5a6472'},
           title:{display:true,text:'Ratifications',font:{size:14,family:FONT_FAMILY},color:'#5a6472'}}
       }

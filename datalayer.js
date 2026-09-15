@@ -115,13 +115,16 @@ function buildData(wb){
     cumulative.series[INST_SHORT[stem]] = { data, total: run };
   });
 
-  /* --- Figure 2: ratifications per year, split A5 / non-A5 --- */
+  /* --- Figure 2: ratifications per year, split A5 / non-A5 ---
+     Ratification, acceptance, approval, accession and succession are alternative
+     routes to the same binding commitment, so all of them count here. This is the
+     basis the Ozone Secretariat reports on, and it matches Figure 1. --- */
   const ratif = {};
   STEMS.forEach(stem => {
     const A5 = {}, nonA5 = {};
     P.forEach(p => {
       const e = p.inst[stem];
-      if(!e || e.method !== 'Ratification') return;
+      if(!e) return;
       const y = String(e.date.getUTCFullYear());
       if(p.a5 === 'NON-A5') nonA5[y] = (nonA5[y]||0)+1; else A5[y] = (A5[y]||0)+1;
     });
@@ -143,15 +146,16 @@ function buildData(wb){
                  year:p.inst.Kigali.date.getUTCFullYear(),
                  date: ddMonY(p.inst.Kigali.date) }));
 
-  /* --- Figure 5: first 10 parties to RATIFY (strict) --- */
+  /* --- Figure 5: first 10 parties to ratify, on the same broad basis --- */
   const top10 = {};
   STEMS.forEach(stem => {
     top10[INST_LONG[stem]] = P
-      .filter(p => p.inst[stem] && p.inst[stem].method === 'Ratification')
+      .filter(p => p.inst[stem])
       .sort((a,b) => a.inst[stem].date - b.inst[stem].date)
       .slice(0,10)
       .map(p => ({ country:p.country, iso2:p.iso2,
-                   date: dMonY(p.inst[stem].date), method:'Ratification' }));
+                   date: dMonY(p.inst[stem].date),
+                   method: p.inst[stem].method }));
   });
 
   /* --- hero KPIs --- */
