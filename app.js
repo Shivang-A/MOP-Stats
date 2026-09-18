@@ -357,8 +357,13 @@ const vlinePlugin = {
         yy = Math.max(yy, chartArea.top + pad);
         // Near the right edge (e.g. the 2026 marker) put the label on the inside
         // of the line so it can't be clipped by the plot boundary.
+        // Markers hard against either edge (1985 Vienna Convention on the left,
+        // 2026 on the right) get their label nudged inward so it can't be clipped.
         const nearRight = xp > chartArea.right - 40*S;
-        const dx = bold ? (nearRight ? -10*S : 8*S) : (nearRight ? -8*S : 0);
+        const nearLeft  = xp < chartArea.left  + 24*S;
+        let dx = bold ? 8*S : 0;
+        if(nearRight) dx = bold ? -10*S : -8*S;
+        else if(nearLeft) dx = bold ? 14*S : 11*S;
         ctx.translate(xp + dx, yy);
         ctx.rotate(-Math.PI/2);
         ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.lineWidth = 4.5; ctx.lineJoin = 'round';
